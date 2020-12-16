@@ -1,0 +1,29 @@
+describe('Ember functionality', () => {
+    beforeEach(function () {
+
+
+        cy.visit('https://dashboard.rtap.net/app/ember')
+    })
+
+
+
+    it('Login to Ember account', () => {
+        cy.location('protocol').should('be.eq','https:')
+        cy.get('#username').type('demo_user')
+        cy.get('input[type=password]').type('RTap1234')
+        cy.get('input[type=submit]').click()
+        cy.url().should('include','/ember')
+        cy.contains('Dashboard',{timeout:10000}).should('be.visible')
+        cy.contains('Quick Config').should('be.visible').click()
+
+///'product On/Off functionality'
+        cy.get(':nth-child(1) > .text-center > .CollapsibleCard > .panel-body > .CollapsibleCard__content')
+        cy.get(':nth-child(1) > .config-header').should('contain.text','Product On/Off')
+        cy.get(':nth-child(1) > .toggle-text').should('contain.text','ON')
+        cy.reload
+        cy.get(':nth-child(1) > .toggle-text').should('contain.text','ON')
+        ///'Ember Split Test %'
+        cy.get(':nth-child(2) > .config-header').should('contain.text','Split Test On/Off')
+        cy.get(':nth-child(2) > .toggle-text').should('contain.text','ON')
+        cy.get('.col-xs-6 > .config-header').should('contain.text','Split Test %')
+    
