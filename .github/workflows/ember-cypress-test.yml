@@ -1,12 +1,21 @@
 name: ember-cypress-test
 on: [push]
 jobs:
-  cypress-run:
-    runs-on: ubuntu-16.04
-    # let's make sure our tests pass on Chrome browser
-    name: E2E on Chrome
+  runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node12.13.0-chrome78-ff70
+      options: --user 1001
     steps:
-      - uses: actions/checkout@v2
-      - uses: cypress-io/github-action@v2
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Install dependencies
+        uses: cypress-io/github-action@v2
         with:
-          browser: chrome
+          start: npm run dev
+          wait-on: "http://localhost:3000"
+      - name: Store Cypress Video Artifacts
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: test-e2e-cypress-videos
+          path: test/e2e/videos
